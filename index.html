@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Nuclear Coding Timer v3</title>
+    <style>
+        body { 
+            background: transparent; 
+            margin: 0; 
+            height: 100vh; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            font-family: 'Courier New', Courier, monospace;
+            overflow: hidden;
+        }
+
+        #bomb-wrapper {
+    position: fixed; /* Stays in place while scrolling */
+    top: 20px;       /* Distance from top */
+    right: 20px;     /* Distance from right */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    z-index: 9999;   /* Stays above everything */
+}
+
+#bomb-container {
+    width: 320px;    /* Scaled down for corner fit */
+    height: 190px;
+    background: url('bomb.png') no-repeat center;
+    background-size: contain;
+    position: relative;
+    user-select: none;
+    mix-blend-mode: screen; 
+}
+
+#display-panel {
+    position: absolute;
+    top: 42%; 
+    left: 52%;
+    transform: translate(-50%, -50%);
+    width: 70px;     /* Adjusted for new scale */
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#timer-text {
+    color: #ff0000;
+    font-size: 16px; /* Smaller font to fit the smaller container */
+    font-weight: bold;
+    text-shadow: 0 0 5px rgba(255, 0, 0, 0.9);
+    letter-spacing: 1px;
+}
+
+        .arm-btn {
+            margin-top: 10px;
+            color: rgba(255, 255, 255, 0.3);
+            font-size: 6px; 
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        #explosion-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            background: url('explosion1.gif') no-repeat center;
+            background-size: cover;
+            z-index: 999;
+        }
+
+        span { cursor: pointer; padding: 0 3px; }
+        span:hover { color: #fff; }
+    </style>
+</head>
+<body>
+
+<div id="bomb-wrapper">
+    <div id="bomb-container">
+        <div id="display-panel">
+            <div id="timer-text">
+                <span id="m" title="Minutes">00</span>:<span id="s" title="Seconds">00</span>
+            </div>
+        </div>
+    </div>
+    <div class="arm-btn">S: START | R: RESET | CLICK MM/SS TO SET</div>
+</div>
+
+<div id="explosion-overlay"></div>
+
+<script>
+    let mins = 0, secs = 0;
+    let countdown;
+    let isRunning = false;
+
+    // SFX
+    const sfxBeep = new Audio('beep.wav');
+    const sfxArm = new Audio('armbomb.wav');
+    const sfxExplode = new Audio('explode.wav');
+
+    // Click to Set Time
+    document.getElementById('m').onclick = () => { if(!isRunning) { mins = (mins + 1) % 100; updateDisplay(); } };
+    document.getElementById('s').onclick = () => { if(!isRunning) { secs = (secs + 1) % 60; updateDisplay(); } };
+
+    // Keybinds
+    window.addEventListener('keydown', (e) => {
+        if (e.key.toLowerCase() === 's') toggleTimer();
+        if (e.key.toLowerCase() === 'r') resetTimer();
+    });
+
+    function updateDisplay() {
+        document.getElementById('m').innerText = String(mins).padStart(2, '0');
+        document.getElementById('s').innerText = String(secs).padStart(2, '0');
+    }
+
+    function resetTimer() {
+        clearInterval(countdown);
+        isRunning = false;
+        mins = 0; secs = 0;
+        updateDisplay();
+        document.getElementById('explosion-overlay').style.display = 'none';
+    }
+
+    function toggleTimer() {
+        if (isRunning || (mins === 0 && secs === 0)) return;
+
+        isRunning = true;
+        sfxArm.play();
+        
+        countdown = setInterval(() => {
+            if (secs > 0) {
+                secs--;
+            } else if (mins > 0) {
+                mins--; 
+                secs = 59;
+            }
+
+            updateDisplay();
+            
+            // Beep only when 10 seconds or less remaining
+            if (mins === 0 && secs <= 10 && secs > 0) {
+                sfxBeep.play();
+            }
+
+            if (mins === 0 && secs === 0) {
+                clearInterval(countdown);
+                detonate();
+            }
+        }, 1000);
+    }
+
+    function detonate() {
+        sfxExplode.play();
+        document.getElementById('explosion-overlay').style.display = 'block';
+        setTimeout(() => {
+            resetTimer();
+        }, 6000); // GIF length adjustment
+    }
+</script>
+
+</body>
+</html>
