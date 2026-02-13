@@ -1,5 +1,6 @@
 # ☢️ Atomic Timer
 A high stakes, gamified productivity timer designed for developers who practice ''speed coding'' or ''extreme programming sprints'':)
+Inspired by "Tokyo Spliff"
 ## 🛠 Features
 Minimalist HUD: Clean `MM:SS` display designed to fit within a futuristic nuclear aesthetic.
 Keyboard-First Interface:
