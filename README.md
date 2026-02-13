@@ -1,9 +1,9 @@
-# ☢️ Atomic-Timer
+# ☢️ Atomic Timer
 A high stakes, gamified productivity timer designed for developers who practice ''speed coding'' or ''extreme programming sprints'':)
 ## 🛠 Features
 Minimalist HUD: Clean `MM:SS` display designed to fit within a futuristic nuclear aesthetic.
-Keyboard-First Interface: `S` to Arm the device.
-`R` to Reset the circuit.
+Keyboard-First Interface:
+ `S` to Arm the device & `R` to Reset the circuit.
 Haptic Audio Feedback: Silent operation until the "Critical Zone" (final 10 seconds), where auditory cues begin.
 Stream Ready: Optimized with CSS blending modes to be used as a transparent overlay in OBS/Vercel/Netlify.
 
