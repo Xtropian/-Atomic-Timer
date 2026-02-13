@@ -16,44 +16,45 @@
         }
 
         #bomb-wrapper {
-    position: fixed; /* Stays in place while scrolling */
-    top: 20px;       /* Distance from top */
-    right: 20px;     /* Distance from right */
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    z-index: 9999;   /* Stays above everything */
-}
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            display: flex; /* Important: We toggle this in JS */
+            flex-direction: column;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.2s; /* Smooth fade out */
+        }
 
-#bomb-container {
-    width: 320px;    /* Scaled down for corner fit */
-    height: 190px;
-    background: url('bomb.png') no-repeat center;
-    background-size: contain;
-    position: relative;
-    user-select: none;
-    mix-blend-mode: screen; 
-}
+        #bomb-container {
+            width: 320px;
+            height: 190px;
+            background: url('bomb.png') no-repeat center;
+            background-size: contain;
+            position: relative;
+            user-select: none;
+            mix-blend-mode: screen; 
+        }
 
-#display-panel {
-    position: absolute;
-    top: 42%; 
-    left: 52%;
-    transform: translate(-50%, -50%);
-    width: 70px;     /* Adjusted for new scale */
-    height: 30px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
+        #display-panel {
+            position: absolute;
+            top: 42%; 
+            left: 52%;
+            transform: translate(-50%, -50%);
+            width: 70px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
 
-#timer-text {
-    color: #ff0000;
-    font-size: 16px; /* Smaller font to fit the smaller container */
-    font-weight: bold;
-    text-shadow: 0 0 5px rgba(255, 0, 0, 0.9);
-    letter-spacing: 1px;
-}
+        #timer-text {
+            color: #ff0000;
+            font-size: 16px;
+            font-weight: bold;
+            text-shadow: 0 0 5px rgba(255, 0, 0, 0.9);
+            letter-spacing: 1px;
+        }
 
         .arm-btn {
             margin-top: 10px;
@@ -69,7 +70,8 @@
             top: 0; left: 0; width: 100vw; height: 100vh;
             background: url('explosion1.gif') no-repeat center;
             background-size: cover;
-            z-index: 999;
+            /* Changed Z-Index to be HIGHER than the bomb, just in case */
+            z-index: 10000; 
         }
 
         span { cursor: pointer; padding: 0 3px; }
@@ -97,6 +99,7 @@
     let isRunning = false;
 
     // SFX
+    // Ensure these files exist in your folder
     const sfxBeep = new Audio('beep.wav');
     const sfxArm = new Audio('armbomb.wav');
     const sfxExplode = new Audio('explode.wav');
@@ -121,7 +124,10 @@
         isRunning = false;
         mins = 0; secs = 0;
         updateDisplay();
+        
+        // FIX: Hide explosion and bring the bomb back
         document.getElementById('explosion-overlay').style.display = 'none';
+        document.getElementById('bomb-wrapper').style.display = 'flex'; 
     }
 
     function toggleTimer() {
@@ -154,10 +160,16 @@
 
     function detonate() {
         sfxExplode.play();
+        
+        // FIX: Hide the bomb wrapper immediately
+        document.getElementById('bomb-wrapper').style.display = 'none';
+        
+        // Show the explosion
         document.getElementById('explosion-overlay').style.display = 'block';
+        
         setTimeout(() => {
             resetTimer();
-        }, 6000); // GIF length adjustment
+        }, 6000); 
     }
 </script>
 
